@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Adoption Issues Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- D3.js for the data visualization -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        .card {
+            transition: box-shadow 0.3s ease-in-out;
+            border-radius: 1rem;
+        }
+        .tooltip {
+            position: absolute;
+            text-align: center;
+            padding: 8px;
+            font: 12px sans-serif;
+            background: #fff;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            color: #333;
+            z-index: 100;
+        }
+        /* D3.js specific styling */
+        .bar-label {
+            font-size: 14px;
+            fill: #4b5563;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto bg-white rounded-3xl shadow-xl p-6 md:p-12">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">Customer Adoption Issues Report</h1>
+            <p class="text-lg md:text-xl text-gray-600">
+                A visual overview of customer adoption scores and key issues, sorted by severity.
+            </p>
+        </header>
+
+        <section id="infographic-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <!-- Cards will be dynamically inserted here by JavaScript -->
+        </section>
+
+        <hr class="my-12 border-gray-200">
+
+        <section id="key-insights" class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Key Insights</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 text-lg">
+                <div class="bg-red-50 border-l-4 border-red-500 rounded-lg p-6 shadow-sm">
+                    <h3 class="font-semibold text-gray-700 mb-2">Most Critical (Top Priority)</h3>
+                    <p class="text-gray-600">
+                        FERRO LINKS (0%), Paranjape Auto Cast (0%), and Ramkrishna Foundry (34%) show multi-module failures significantly impacting adoption.
+                    </p>
+                </div>
+                <div class="bg-yellow-50 border-l-4 border-yellow-500 rounded-lg p-6 shadow-sm">
+                    <h3 class="font-semibold text-gray-700 mb-2">Tier 2 – Medium Severity</h3>
+                    <p class="text-gray-600">
+                        Mal Metalliks (47%), Shree Kedar Metals (46%), and Ratan Industries (48%) face major machine or module issues.
+                    </p>
+                </div>
+                <div class="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-6 shadow-sm">
+                    <h3 class="font-semibold text-gray-700 mb-2">Tier 3 – Lower Severity</h3>
+                    <p class="text-gray-600">
+                        Customers with scores from 61–75% (JMT Auto, Yash Metallics, etc.) have moderate adoption drops but remain functional in other modules.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-12 border-gray-200">
+
+        <section id="graph-section">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Customer Adoption Scores by Severity</h2>
+            <div id="graph-container" class="w-full">
+                <!-- D3.js graph will be rendered here -->
+            </div>
+        </section>
+    </div>
+
+    <script>
+        (function() {
+            // Data from the provided report
+            const customerData = [
+                {
+                    name: "FERRO LINKS",
+                    score: 0,
+                    modules: "Compared (87.80%), Suggestion (7.32%), RM Sample (2.44%), Control Plan (2.44%)",
+                    issues: "0% grade and sample tagging; no RM or Control Plan mentioned; no suggestions due to tagging failure; customer not responding.",
+                    actionables: "Attempt remote diagnosis (e.g. via Anydesk); escalate contact attempts; provide intensive tagging support."
+                },
+                {
+                    name: "Paranjape Auto Cast Pvt Ltd (Shirwal AL)",
+                    score: 0,
+                    modules: "Compared (62.07%), Display (34.48%), RM Sample (1.72%), Control Plan (1.72%)",
+                    issues: "No files received in 7 days for tagging; display module off 15 days; RM & Control Plan missing; customer not responding.",
+                    actionables: "Continue engagement attempts; escalate support requests; encourage display activation and data submission."
+                },
+                {
+                    name: "Ramkrishna Foundry Pvt. Ltd.",
+                    score: 34,
+                    modules: "Compared (53.66%), Suggestion (7.32%), RM Sample (2.44%), Control Plan (2.44%)",
+                    issues: "0% grade/sample tagging due to XML file structure changes; no suggestions due to tagging failure; issues ongoing since July.",
+                    actionables: "Fix XML parsing; retrain new operators; improve tagging processes; reinstate Add/Dil suggestions."
+                },
+                {
+                    name: "NIPHA EXPORTS PVT. LTD. SRP (FOUNDRY)",
+                    score: 30,
+                    modules: "HMT & MTC (36.71%), Heat Plan (20.34%), Production Plan (11.86%), Compared (0.41%), Display (0.47%), RM Sample (0.34%), Control Plan (0.34%)",
+                    issues: "Low or no use of heat and production plans; limited HMT and MTC activity; partial grade tagging; RM and Control Plan lacking.",
+                    actionables: "Schedule adoption review; motivate production and heat plan creation; troubleshoot HMT/MTC use; follow-up on data quality."
+                },
+                {
+                    name: "Mal Metalliks Pvt. Ltd.",
+                    score: 47,
+                    modules: "HMT & MTC (49.13%), Compared Reading (0.61%), Suggestion (0.61%), RM Sample (0.34%), Control Plan (0.34%)",
+                    issues: "No hardness, microstructure, or tensile files received in last 15 days; incorrect tagging for FeSiMg and Inoculant affecting suggestions.",
+                    actionables: "Engage to resolve missing files; correct tagging for FeSiMg and Inoculant; improve suggestion accuracy."
+                },
+                {
+                    name: "Shree Kedar Metals",
+                    score: 46,
+                    modules: "HMT & MTC (47.08%), Compared (1.22%), Suggestion (0.75%), RM Sample (0.34%), Control Plan (0.34%), Display (4.27%)",
+                    issues: "No files received for hardness, microstructure, or tensile in last 15 days; MTC module unused; moderate display inactivity.",
+                    actionables: "Connect to identify file upload issues; provide training and support for HMT, MTC, and data submission."
+                },
+                {
+                    name: "Sapre Precision Technologies",
+                    score: 39,
+                    modules: "HMT & MTC (38.55%), Heat Plan (21.82%), Compared (0.07%), RM Sample (0.36%), Control Plan (0.36%)",
+                    issues: "Missing hardness and tensile files in last 15 days; no MTC created; no new heat plans; good grade/sample tagging.",
+                    actionables: "Investigate causes of missing files; encourage Heat Plan and MTC use; retrain on Control Plan and RM sample submission."
+                },
+                {
+                    name: "Crescent Foundry Pvt Ltd (Kulgachia Unit)",
+                    score: 41,
+                    modules: "Display (58.82%)",
+                    issues: "Display module not used consistently leading to lowered adoption score.",
+                    actionables: "Engage directly to increase display usage; provide technical support and refresher if needed."
+                },
+                {
+                    name: "Ratan Industries",
+                    score: 48,
+                    modules: "Compared (13.44%), Suggestion (4.92%), Display (30.49%), RM Sample (1.64%), Control Plan (1.64%)",
+                    issues: "Missing grade tagging in pop-up though present in raw file; nonsubscriber erroneously marked for Addition/Dil; display inactive.",
+                    actionables: "Correct module opt-in data; retrain on pop-up tagging; encourage display activation."
+                },
+                {
+                    name: "Unimech Industries Pvt Ltd",
+                    score: 54,
+                    modules: "HMT & MTC (43.60%), Compared (0.84%), Display (1.56%)",
+                    issues: "No hardness and microstructure files received in last 15 days; incomplete MTC creation; good grade tagging.",
+                    actionables: "Connect to resolve missing files and enable MTC usage; retrain where necessary."
+                },
+                {
+                    name: "Mantri Metallics Pvt Ltd Pantnagar",
+                    score: 57,
+                    modules: "HMT & MTC (41.25%), Compared (0.13%), Control Plan (0.63%), Display (0.87%)",
+                    issues: "No hardness and microstructure files in last 15 days; tensile parsing successful; control plan missing.",
+                    actionables: "Identify file upload issues; provide technical assistance; promote completion of control plan data."
+                },
+                {
+                    name: "Vishwakarma Auto Components",
+                    score: 58,
+                    modules: "Display (32.79%), Suggestion (3.28%), Compared (1.97%), RM Sample (1.64%), Control Plan (1.64%)",
+                    issues: "FeSiMg not tagged for DI grades; missing Mg recovery data; suggestions incomplete; display inactive.",
+                    actionables: "Work with customer to address tagging and Mg recovery data; encourage display reactivation."
+                },
+                {
+                    name: "JMT Auto Limited",
+                    score: 61,
+                    modules: "Display (32.79%), Compared (2.62%), Add/Dil Suggestion (1.64%), RM Sample (1.64%), Control Plan (1.64%)",
+                    issues: "Display module inactive; minor issues with Mg recovery rate and suggestions; high grade/sample tagging success.",
+                    actionables: "Push for display usage; correct Mg recovery tagging; monitor Add/Dil suggestion improvements."
+                },
+                {
+                    name: "Yash Metallics Pvt Ltd",
+                    score: 63,
+                    modules: "Display (32.79%), RM Sample (1.64%), Control Plan (1.64%), Compared (0.66%)",
+                    issues: "Upgrade needed in grade tagging for new grades; display module inactive; RM and control plan data missing.",
+                    actionables: "Facilitate grade dictionary update; encourage display module activation and RM/Control Plan data entry."
+                },
+                {
+                    name: "R M TECHNOCAST",
+                    score: 74,
+                    modules: "Compared (10.82%), Suggestion (4.92%), Display (6.56%), RM Sample (1.64%), Control Plan (1.64%)",
+                    issues: "Partial tagging failure, zero Add/Dil suggestions from missing tags and scraps; display partially used.",
+                    actionables: "Retrain on pop-up tagging; coordinate to tag FeSiMg, inoculant, scrap and additives; encourage consistent display use."
+                },
+                {
+                    name: "Belgaum FerroCast Pvt Ltd",
+                    score: 72,
+                    modules: "HMT & MTC (27.78%), Compared (0.15%), Suggestion (0.07%)",
+                    issues: "Missing microstructure files; partial tensile parsing; missing tags affecting suggestions.",
+                    actionables: "Investigate file upload blockages; improve FeSiMg & Inoculant tagging; remove extraneous min/max values."
+                },
+                {
+                    name: "AMI Steel Pvt Ltd",
+                    score: 72,
+                    modules: "Compared (15.61%), Add/Dil Suggestion (7.32%), RM Sample (2.44%), Control Plan (2.44%)",
+                    issues: "Earlier 0% tagging; recent improvements since Aug 27; Add/Dil and RM/Control Plan still missing.",
+                    actionables: "Continue monitoring tagging improvements; encourage Add/Dil and RM/Control Plan usage."
+                },
+                {
+                    name: "Crescent Foundry Pvt Ltd (Bagnan Unit)",
+                    score: 75,
+                    modules: "Display (100%)",
+                    issues: "Display module used only 40% of the time by users.",
+                    actionables: "Work on increasing Display module engagement and usage rates."
+                }
+            ];
+
+            // Function to determine the card color based on score
+            function getCardColor(score) {
+                if (score <= 35) return 'bg-red-50 border-red-500';
+                if (score <= 50) return 'bg-yellow-50 border-yellow-500';
+                return 'bg-blue-50 border-blue-500';
+            }
+            function getTextColor(score) {
+                 if (score <= 35) return 'text-red-700';
+                if (score <= 50) return 'text-yellow-700';
+                return 'text-blue-700';
+            }
+
+            const gridContainer = document.getElementById('infographic-grid');
+
+            // Dynamically create cards for each customer
+            customerData.forEach(customer => {
+                const card = document.createElement('div');
+                card.className = `card relative p-6 border-l-4 rounded-lg shadow-md ${getCardColor(customer.score)}`;
+
+                card.innerHTML = `
+                    <div>
+                        <h3 class="text-xl font-bold mb-1">${customer.name}</h3>
+                        <p class="text-gray-600 mb-4">Adoption Score: <span class="font-bold text-lg ${getTextColor(customer.score)}">${customer.score}%</span></p>
+                        <p class="text-sm text-gray-500 mb-4">
+                            <span class="font-medium text-gray-700">Critical Modules:</span> ${customer.modules}
+                        </p>
+
+                        <h4 class="font-semibold text-gray-800 mt-4 mb-2">Key Issues</h4>
+                        <p class="text-sm text-gray-600 mb-4">${customer.issues}</p>
+
+                        <h4 class="font-semibold text-gray-800 mb-2">Actionables</h4>
+                        <pre class="text-sm text-gray-600 font-sans whitespace-pre-wrap">${customer.actionables}</pre>
+                    </div>
+                `;
+                gridContainer.appendChild(card);
+            });
+
+            // D3.js Bar Chart
+            const data = customerData.sort((a, b) => a.score - b.score);
+            const margin = { top: 20, right: 30, bottom: 150, left: 50 };
+            const containerWidth = document.getElementById('graph-container').offsetWidth;
+            const width = containerWidth - margin.left - margin.right;
+            const height = 500 - margin.top - margin.bottom;
+
+            const svg = d3.select("#graph-container")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+
+            const x = d3.scaleBand()
+                .range([0, width])
+                .domain(data.map(d => d.name))
+                .padding(0.2);
+
+            const y = d3.scaleLinear()
+                .range([height, 0])
+                .domain([0, 100]);
+
+            svg.append("g")
+                .attr("transform", `translate(0,${height})`)
+                .call(d3.axisBottom(x))
+                .selectAll("text")
+                .attr("transform", "rotate(-45)")
+                .style("text-anchor", "end")
+                .style("font-size", "12px");
+
+            svg.append("g")
+                .call(d3.axisLeft(y).ticks(5));
+
+            // Color scale for the bars
+            const colorScale = d3.scaleLinear()
+                .domain([0, 35, 50, 100])
+                .range(['#ef4444', '#f59e0b', '#3b82f6', '#10b981']);
+
+            const tooltip = d3.select("body").append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 0);
+
+            svg.selectAll(".bar")
+                .data(data)
+                .enter().append("rect")
+                .attr("class", "bar")
+                .attr("x", d => x(d.name))
+                .attr("y", d => y(d.score))
+                .attr("width", x.bandwidth())
+                .attr("height", d => height - y(d.score))
+                .attr("fill", d => colorScale(d.score))
+                .on("mouseover", (event, d) => {
+                    tooltip.transition()
+                        .duration(200)
+                        .style("opacity", .9);
+                    tooltip.html(`<strong>${d.name}</strong><br/>Score: ${d.score}%`)
+                        .style("left", (event.pageX + 10) + "px")
+                        .style("top", (event.pageY - 28) + "px");
+                })
+                .on("mouseout", (d) => {
+                    tooltip.transition()
+                        .duration(500)
+                        .style("opacity", 0);
+                });
+        })();
+    </script>
+</body>
+</html>

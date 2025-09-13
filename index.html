@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Foundry Product Analytics Report Infographic</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px; /* Base font size */
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-lg */
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .chart-container {
+            width: 100%;
+            height: 450px; /* Default height for charts */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .tooltip {
+            position: absolute;
+            text-align: left;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            border-radius: 0.5rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 1000;
+            min-width: 200px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th, td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e2e8f0; /* border-gray-200 */
+            text-align: left;
+            font-size: 0.9rem;
+        }
+        th {
+            background-color: #f8fafc; /* bg-gray-50 */
+            font-weight: 600;
+            color: #4a5568; /* text-gray-700 */
+            text-transform: uppercase;
+            font-size: 0.8rem; /* text-sm */
+        }
+        tbody tr:hover {
+            background-color: #f0f4f8; /* hover:bg-gray-100 */
+        }
+        .notes {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #f3f4f6;
+            border-left: 4px solid #3b82f6;
+            border-radius: 0.5rem;
+            color: #4b5563;
+        }
+        .summary-card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid #10b981; /* bg-emerald-500 */
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-teal-50 to-amber-100 p-8 text-gray-900 rounded-xl">
+
+    <!-- Header Section -->
+
+<div class="container mx-auto">
+        <nav class="flex gap-4 mb-6 text-blue-600">
+            
+            <a class="underline" href="./insights-actionable/">Insights &amp; Actionable</a>
+        </nav>
+
+    <div class="text-center mb-12 bg-white p-8 rounded-2xl shadow-xl">
+        <h1 class="text-5xl font-extrabold text-teal-700 mb-4 flex items-center justify-center">
+            <i class="fas fa-chart-line mr-4 text-teal-600"></i>
+            Foundry Product Analytics Report
+            <i class="fas fa-industry ml-4 text-teal-600"></i>
+        </h1>
+        <p class="text-xl text-gray-600 mb-2">Period: 1st Sep – 11th Sep 2025</p>
+    </div>
+
+    <div class="container">
+        <!-- 1. Customer Metrics -->
+        <div class="card">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">1. Customer Metrics</h2>
+            <div class="table-container">
+                <table class="min-w-full">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Previous Period</th>
+                            <th>Current Period</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Paid Customers</td><td>112</td><td>119</td><td class="text-green-500 font-bold">+7</td></tr>
+                        <tr><td>New Customers</td><td>8</td><td>0</td><td class="text-red-500 font-bold">-8</td></tr>
+                        <tr><td>Dropped Customers</td><td>0</td><td>1</td><td class="text-red-500 font-bold">+1</td></tr>
+                        <tr><td>Total Customers</td><td>120</td><td>119</td><td class="text-red-500 font-bold">-1</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- 2. Customer Grouping by Feature Attributes - Pie Chart -->
+        <div class="card">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">2. Customer Grouping by Feature Attributes</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                <div>
+                    <p class="text-lg font-medium text-gray-800 mb-2">Overall Customer Grouping:</p>
+                    <ul class="list-disc list-inside text-gray-700 mb-4">
+                        <li>Total Active Paid Customers: <span class="font-semibold">119</span></li>
+                        <li>ChargeMix Users: <span class="font-semibold">5</span></li>
+                        <li>Software Off: <span class="font-semibold">5</span></li>
+                        <li>Software ON: <span class="font-semibold">109</span></li>
+                    </ul>
+                    <p class="text-lg font-medium text-gray-800 mt-4 mb-2">Software ON segmentation by feature attribute:</p>
+                    <p class="text-sm text-gray-600 mb-4">Hover over the pie slices for exact customer counts.</p>
+                </div>
+                <div id="pie-chart-2" class="chart-container"></div>
+            </div>
+        </div>
+
+        <!-- 3. ChargeMix Usage - Bar Graph -->
+        <div class="card">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">3. ChargeMix Usage</h2>
+            <div class="table-container mt-4">
+                <table class="min-w-full">
+                    <thead>
+                        <tr>
+                            <th>Customer Name</th>
+                            <th>Modified Prev Period</th>
+                            <th>Previous period Created</th>
+                            <th>Modified Current Period</th>
+                            <th>Optimized Count</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Brakes India Foundry Division</td><td>26</td><td>14</td><td>14</td><td>5</td></tr>
+                        <tr><td>Brakes India Foundry Division Naidupet</td><td>1</td><td>0</td><td>2</td><td>2</td></tr>
+                        <tr><td>Brakes India Pvt Ltd (Flometallic Unit, Jhagadia)</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+                        <tr><td>BRAKES INDIA PRIVATE LIMITED UNIT 2</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+                        <tr><td>CRESCENT FOUNDRY CO PVT.LTD.</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="text-sm text-gray-600 mt-4 mb-4">Comparison of ChargeMix Modified/Created in Previous vs. Current Period. Hover over bars for details, including Optimized ChargeMix Count.</p>
+            <div id="bar-chart-3" class="chart-container"></div>
+        </div>
+
+        <!-- 4. Software Turned Off -->
+        <div class="card">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">4. Software Turned Off</h2>
+            <div class="table-container">
+                <table class="min-w-full">
+                    <thead>
+                        <tr>
+                            <th>Customer Name</th>
+                            <th>Spectro Turn Off Date</th>
+                            <th>Opt-in Feature</th>
+                            <th>Cluster</th>
+                            <th>Sub-Cluster</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Top-Gear Metals Pvt Ltd</td><td>15-May-25 (120 days)</td><td>Suggestion</td><td>Maharashtra</td><td>Kolhapur</td></tr>
+                        <tr><td>SAN PRECISION ALLOYS PVT LTD</td><td>04-Jul-25(70 days)</td><td>Reading Compare</td><td>Tamil Nadu</td><td>Coimbatore</td></tr>
+                        <tr><td>Alchemy Precision Cast Pvt Ltd</td><td>08-Aug-25(35 days)</td><td>Charge Mix + Suggestion</td><td>Maharashtra</td><td>Pune</td></tr>
+                        <tr><td>S.N.S. Alloy Castings</td><td>26-Aug-25(17 days)</td><td>Suggestion</td><td>Karnataka</td><td>Shimoga</td></tr>
+                        <tr><td>Brahmani Technocast</td><td>05-Sep-25(7 days)</td><td>Suggestion</td><td>Gujarat</td><td>Rajkot</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- 5. Module Usage Status -->
+        <div class="card">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">5. Module Usage Status</h2>
+            
+            <!-- 5.1 Production Plan - Bar Graph -->
+            <h3 class="text-xl font-medium text-gray-800 mb-4">5.1 Production Plan</h3>
+            <div class="table-container mt-4">
+                <table class="min-w-full">
+                    <thead>
+                        <tr>
+                            <th>Customer Name</th>
+                            <th>Plans Created Prev Period</th>
+                            <th>Plans Created Current Period</th>
+                            <th>Avg Time to Create (min)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Shree Kedar Metals</td><td>6</td><td>5</td><td>2</td></tr>
+                        <tr><td>Belgaum FerroCast Pvt Ltd</td><td>0</td><td>0</td><td>0</td></tr>
+                        <tr><td>Vishwakarma Founders Pvt Ltd</td><td>0</td><td>0</td><td>0</td></tr>
+                        <tr><td>Mal Metalliks Pvt Ltd</td><td>0</td><td>0</td><td>0</td></tr>
+                        <tr><td>Sapre Precision Technologies</td><td>0</td><td>0</td><td>0</td></tr>
+                        <tr><td>NIPHA EXPORTS PVT. LTD.</td><td>0</td><td>0</td><td>0</td></tr>
+                        <tr><td>Maxwell Auto Components Pvt Ltd</td><td>0</td><td>0</td><td>0</td></tr>
+                        <tr><td>CRESCENT FOUNDRY CO PVT.LTD.(GJ)</td><td>1</td><td>0</td><td>0</td></tr>
+                        <tr><td>P.C. Sons Castings Pvt Ltd</td><td>1</td><td>0</td><td>0</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="notes mt-6">
+                <p class="font-semibold text-lg mb-2">Note:</p>
+                <p><li>Out of 9 customers, only Shree Kedar visited the production plan and created 5 times, and also they add 2 and 3 parts for each production plan. 
+                <li>Sapre attempted to create the plan but dropped off on part name finding.</p>
+            </div>
+            <p class="text-sm text-gray-600 mt-4 mb-4">Number of Production Plans Created: Previous vs. Current Period. Hover over bars for details.</p>
+            <div id="bar-chart-5-1" class="chart-container"></div>
+            
+            <!-- 5.2 Heat Plan - Bar Graph -->
+            <h3 class="text-xl font-medium text-gray-800 mb-4 mt-8">5.2 Heat Plan</h3>
+            <div class="table-container mt-4">
+                <table class="min-w-full">
+                    <thead>
+                        <tr>
+                            <th>Customer Name</th>
+                            <th>Created Prev</th>
+                            <th>Completed Prev</th>
+                            <th>Created Current</th>
+                            <th>Completed Current</th>
+                            <th>Last Completed Date</th>
+                            <th>Avg/Day</th>
+                            <th>Benchmark</th>
+                            <th>Create process initiated</th>
+                            <th>Create process initiated drop</th>
+                            <th>Drop Rate %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Belgaum FerroCast Pvt Ltd</td><td>323</td><td>52</td><td>265</td><td>44</td><td>10-Sep-25</td><td>44.17</td><td>68</td><td>51</td><td>15</td><td>29%</td></tr>
+                        <tr><td>Vishwakarma Founders Pvt Ltd</td><td>554</td><td>297</td><td>486</td><td>277</td><td>11-Sep-25</td><td>71.13</td><td>45</td><td>151</td><td>16</td><td>11%</td></tr>
+                        <tr><td>Mal Metalliks Pvt Ltd</td><td>522</td><td>308</td><td>506</td><td>207</td><td>11-Sep-25</td><td>53.3</td><td>60</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>Shree Kedar Metals</td><td>98</td><td>82</td><td>40</td><td>15</td><td>10-Sep-25</td><td>5.5</td><td>15</td><td>51</td><td>7</td><td>14%</td></tr>
+                        <tr><td>Sapre Precision Technologies</td><td>66</td><td>7</td><td>31</td><td>0</td><td>11-Sep-25</td><td>30.5</td><td>15</td><td>8</td><td>2</td><td>25%</td></tr>
+                        <tr><td>CRESCENT FOUNDRY CO PVT.LTD.(GJ)</td><td>87</td><td>45</td><td>73</td><td>28</td><td>11-Sep-25</td><td>18.25</td><td>40</td><td>10</td><td>2</td><td>20%</td></tr>
+                        <tr><td>P.C. Sons Castings Pvt Ltd</td><td>-</td><td>-</td><td>47</td><td>27</td><td>10-Sep-25</td><td>9.4</td><td>20</td><td>37</td><td>20</td><td>54%</td></tr>
+                        <tr><td>NIPHA EXPORTS PVT. LTD.</td><td>0</td><td>0</td><td>0</td><td>0</td><td>-</td><td>-</td><td>70</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>Maxwell Auto Components Pvt Ltd</td><td>0</td><td>0</td><td>0</td><td>0</td><td>-</td><td>-</td><td>40</td><td>-</td><td>-</td><td>-</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="notes mt-6">
+                <p class="font-semibold text-lg mb-2">Remarks Note:</p>
+                <p>Vishwakarma shows strong improvement and less struggle with drop-offs (11%). Belgaum FerroCast remains stagnant with very low completion and a high drop-off rate (29%). Mal Metalliks, Shree Kedar, and Crescent have dropped sharply in usage. Sapre has not completed any heat plans and has a 25% drop rate. P.C. Sons is a promising new performer, but their drop-off rate is also high (54%), while NIPHA and Maxwell remain completely inactive.</p>
+            </div>
+            <p class="text-sm text-gray-600 mt-4 mb-4">Heat Plans Created vs. Completed. Hover over bars for details, including Avg Heat Plan Per Day, Benchmark, and Drop Rate %.</p>
+            <div id="bar-chart-5-2" class="chart-container"></div>
+            
+            <!-- 5.3 Melting Section (EAF) - Bar Graph -->
+            <h3 class="text-xl font-medium text-gray-800 mb-4 mt-8">5.3 Melting Section (EAF)</h3>
+            <div class="table-container mt-4">
+                <table class="min-w-full">
+                    <thead>
+                        <tr>
+                            <th>Customer Name</th>
+                            <th>Heats Submitted Prev</th>
+                            <th>Recoverable Loss % Prev</th>
+                            <th>Heats Submitted Current</th>
+                            <th>Recoverable Loss % Current</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Titagarh Rail Systems Limited (HED)</td><td>82</td><td>10%</td><td>38</td><td>10%</td></tr>
+                        <tr><td>LOCO CASTINGS PRIVATE LIMITED</td><td>30</td><td>10%</td><td>18</td><td>14%</td></tr>
+                        <tr><td>TITAGARH STEEL</td><td>72</td><td>8%</td><td>48</td><td>9%</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="text-sm text-gray-600 mt-4 mb-4">Number of Heats Submitted: Previous vs. Current Period. Hover over bars for Recoverable Loss %.</p>
+            <div id="bar-chart-5-3" class="chart-container"></div>
+        </div>
+
+        <!-- 6. HMT Section - Bar Graph -->
+        <div class="card">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">6. HMT Section</h2>
+            <div class="table-container mt-4">
+                <table class="min-w-full">
+                    <thead>
+                        <tr>
+                            <th>Customer Name</th>
+                            <th>Report Type</th>
+                            <th>Last Created Date</th>
+                            <th>Prev Count</th>
+                            <th>Current Count</th>
+                            <th>Fail Count</th>
+                            <th>Fail %</th>
+                            <th>Remarks / Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>KALYAN STEEL PRODUCTS PVT LTD</td><td>Hardness</td><td>10-Sep-2025</td><td>124</td><td>43</td><td>-</td><td>-</td><td></td></tr>
+                        <tr><td>KALYAN STEEL PRODUCTS PVT LTD</td><td>Microstructure</td><td>10-Sep-2025</td><td>3</td><td>5</td><td>-</td><td>-</td><td></td></tr>
+                        <tr><td>KALYAN STEEL PRODUCTS PVT LTD</td><td>Tensile</td><td>22-Aug-2025</td><td>1</td><td>0</td><td>-</td><td>-</td><td></td></tr>
+                        <tr><td>Parvati Foundry</td><td>Hardness</td><td>31-Aug-2025</td><td>9</td><td>0</td><td>-</td><td>-</td><td></td></tr>
+                        <tr><td>Parvati Foundry</td><td>Microstructure</td><td>11-Sep-2025</td><td>105</td><td>101</td><td>-</td><td>-</td><td></td></tr>
+                        <tr><td>Parvati Foundry</td><td>Tensile</td><td>29-Aug-2025</td><td>16</td><td>0</td><td>-</td><td>-</td><td></td></tr>
+                        <tr><td>RBA EXPORTS PRIVATE LIMITED TN</td><td>Hardness</td><td>2-Sep-2025</td><td>4</td><td>2</td><td>-</td><td>-</td><td></td></tr>
+                        <tr><td>RBA EXPORTS PRIVATE LIMITED TN</td><td>Microstructure</td><td>2-Sep-2025</td><td>17</td><td>4</td><td>-</td><td>-</td><td>2 reports downloaded by customer</td></tr>
+                        <tr><td>RBA EXPORTS PRIVATE LIMITED TN</td><td>Tensile</td><td>2-Sep-2025</td><td>4</td><td>3</td><td>-</td><td>-</td><td></td></tr>
+                        <tr><td>MANTRI METALLICS PVT LTD</td><td>Hardness</td><td>11-Sep-2025</td><td>103</td><td>88</td><td>-</td><td>-</td><td></td></tr>
+                        <tr><td>MANTRI METALLICS PVT LTD</td><td>Microstructure</td><td>11-Sep-2025</td><td>422</td><td>377</td><td>-</td><td>-</td><td>1 report downloaded</td></tr>
+                        <tr><td>MANTRI METALLICS PVT LTD</td><td>Tensile</td><td>11-Sep-2025</td><td>46</td><td>94</td><td>-</td><td>-</td><td></td></tr>
+                        <tr><td>NIF ISPAT LIMITED (UNIT-IV)</td><td>Hardness</td><td>9-Sep-2025</td><td>0</td><td>1</td><td>1</td><td>100%</td><td>Due to new parser file failed, its fixed now</td></tr>
+                        <tr><td>NIF ISPAT LIMITED (UNIT-IV)</td><td>Microstructure</td><td>11-Sep-2025</td><td>0</td><td>107</td><td>100</td><td>93.46%</td><td>Due to new parser file failed, its fixed now</td></tr>
+                        <tr><td>NIF ISPAT LIMITED (UNIT-IV)</td><td>Tensile</td><td>10-Sep-2025</td><td>0</td><td>4</td><td>4</td><td>100%</td><td>Due to new parser file failed, its fixed now</td></tr>
+                        <tr><td>Sapre Precision Technologies</td><td>Hardness</td><td>11-Sep-2025</td><td>0</td><td>43</td><td>11</td><td>25.58%</td><td>Due to Structure changed</td></tr>
+                        <tr><td>Sapre Precision Technologies</td><td>Microstructure</td><td>11-Sep-2025</td><td>5</td><td>6</td><td>-</td><td>-</td><td></td></tr>
+                        <tr><td>Sapre Precision Technologies</td><td>Tensile</td><td>28-Aug-2025</td><td>5</td><td>0</td><td>-</td><td>-</td><td></td></tr>
+                        <tr><td>Maxwell Auto Components Pvt Ltd</td><td>Hardness</td><td>11-Sep-2025</td><td>0</td><td>18</td><td>-</td><td>-</td><td>Report downloaded once</td></tr>
+                        <tr><td>Maxwell Auto Components Pvt Ltd</td><td>Microstructure</td><td>10-Sep-2025</td><td>0</td><td>19</td><td>19</td><td>100.00%</td><td>Due to new parser file failed, its fixed now</td></tr>
+                        <tr><td>Maxwell Auto Components Pvt Ltd</td><td>Tensile</td><td>11-Sep-2025</td><td>0</td><td>33</td><td>7</td><td>21.21%</td><td>Due to new parser file failed, its fixed now; reports downloaded 5 times</td></tr>
+                        <tr><td>Airking Industries</td><td>Microstructure</td><td>9-Sep-2025</td><td>120</td><td>73</td><td>-</td><td>-</td><td></td></tr>
+                        <tr><td>Belgaum FerroCast Pvt Ltd</td><td>Hardness</td><td>11-Sep-2025</td><td>0</td><td>181</td><td>-</td><td>-</td><td>1 hardness report and 1 tensile report downloaded</td></tr>
+                        <tr><td>Belgaum FerroCast Pvt Ltd</td><td>Tensile</td><td>11-Sep-2025</td><td>14</td><td>291</td><td>41</td><td>14.09%</td><td>Two parser implemented.. now it' fixed</td></tr>
+                        <tr><td>GOVIND STEEL</td><td>Microstructure</td><td>11-Sep-2025</td><td>181</td><td>312</td><td>-</td><td>-</td><td></td></tr>
+                        <tr><td>Mal Metalliks Pvt Ltd</td><td>Tensile</td><td>11-Sep-2025</td><td>0</td><td>0</td><td>-</td><td>-</td><td>3 duplicates</td></tr>
+                        <tr><td>Mantri Metallics Pvt Ltd Pantnagar</td><td>Hardness</td><td>11-Sep-2025</td><td>0</td><td>7</td><td>-</td><td>-</td><td></td></tr>
+                        <tr><td>Mantri Metallics Pvt Ltd Pantnagar</td><td>Tensile</td><td>11-Sep-2025</td><td>0</td><td>20</td><td>-</td><td>-</td><td></td></tr>
+                        <tr><td>NIPHA EXPORTS PVT LTD SRP (Foundry)</td><td>Microstructure</td><td>11-Sep-2025</td><td>323</td><td>207</td><td>-</td><td>-</td><td>Customer downloaded reports 49 times</td></tr>
+                        <tr><td>Shree Kedar Metals</td><td>Tensile</td><td>30-Aug-2025</td><td>7</td><td>0</td><td>-</td><td>-</td><td></td></tr>
+                        <tr><td>SRIUNHAT METALIKS PVT LTD</td><td>Tensile</td><td>10-Sep-2025</td><td>2</td><td>1</td><td>-</td><td>-</td><td>1 report downloaded twice</td></tr>
+                        <tr><td>Unimech Industries Pvt Ltd</td><td>Tensile</td><td>11-Sep-2025</td><td>81</td><td>53</td><td>-</td><td>-</td><td></td></tr>
+                        <tr><td>Vishwakarma Founders Pvt Ltd</td><td>Tensile</td><td>26-Aug-2025</td><td>22</td><td>0</td><td>-</td><td>-</td><td>Previous hardness report downloaded</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="notes mt-6">
+                <p class="font-semibold text-lg mb-2">HMT Usage Summary Notes:</p>
+                <ul class="list-disc list-inside text-gray-700">
+                    <li>Customers actively benefiting are NIPHA Exports, Mantri Metallics, Maxwell Auto, and Belgaum FerroCast, as they create, parse, and download reports consistently. (Note: Only micro reports are coming.. but hardess test only 1 times and tensile test only 6 times.. that's why they don't create MTC report.)</li>
+                    <li>Partially benefiting are Govind Steel and Mantri Pantnagar (good usage but mixed results), along with Sapre Precision and Belgaum FerroCast tensile where parsing errors restrict value.</li>
+                    <li>Not benefiting are NIF Ispat (93–100% parsing failures despite activity) and Kalyan Steel, Parvati Foundry, Airking, Unimech, Shree Kedar, and Vishwakarma, who show either declining usage or inactivity.</li>
+                </ul>
+            </div>
+            <p class="text-sm text-gray-600 mt-4 mb-4">Comparison of total HMT reports in Previous vs. Current Period per company. Hover over bars for details.</p>
+            <div id="bar-chart-6" class="chart-container"></div>
+        </div>
+
+        <!-- 7. Casting Report – MTC -->
+        <div class="card">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">7. Casting Report – MTC</h2>
+            <div class="table-container">
+                <table class="min-w-full">
+                    <thead>
+                        <tr>
+                            <th>Customer Name</th>
+                            <th>Overall Certificate</th>
+                            <th>Prev Period</th>
+                            <th>Current Period</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Parvati Foundry</td><td>Total: 2, Pending: 1, Complete: 1</td><td>0</td><td>2</td></tr>
+                        <tr><td>RBA Exports Pvt Ltd (TN)</td><td>Total: 2, Pending: 0, Complete: 2</td><td>0</td><td>2</td></tr>
+                        <tr><td>Kalyan Steel Products Pvt Ltd</td><td>Total: 2, Pending: 0, Complete: 2</td><td>2</td><td>0</td></tr>
+                        <tr><td>Unimech Industries Pvt Ltd</td><td>Total: 2, Pending: 2, Complete: 0</td><td>0</td><td>0</td></tr>
+                        <tr><td>Vishwakarma Foundry Pvt Ltd</td><td>Total: 12, Pending: 7, Complete: 5</td><td>0</td><td>0</td></tr>
+                        <tr><td>Crescent Foundry Co Pvt Ltd (GJ)</td><td>Total: 5, Pending: 1, Complete: 4</td><td>0</td><td>0</td></tr>
+                        <tr><td>Govind Steel</td><td>Total: 2, Pending: 0, Complete: 1</td><td>0</td><td>0</td></tr>
+                        <tr><td>Mal Metalliks Pvt Ltd</td><td>Total: 12, Pending: 12, Complete: 0</td><td>0</td><td>0</td></tr>
+                        <tr><td>NIPHA Exports SRP Unit</td><td>Total: 4, Pending: 1, Complete: 3</td><td>0</td><td>0</td></tr>
+                    </tbody>
+                </table>
+            </div>
+             <div class="notes mt-7">
+                <p class="font-semibold text-lg mb-2">MTC Remarks:</p>
+                <ul class="list-disc list-inside text-gray-700">
+                    <li>Sapre Precision Techologies, Shree Kedar, Shree Spherotech, Belgaum Ferrocast, PLASMA ALLOYS PRIVATE LIMITED, Maxwell Auto Components Pvt Ltd.these 6 customers are never created MTC certificatte</li>
+                </ul>
+        </div>
+
+        <!-- 8. Hardware Device Utilization (Last 15 Days) - Bar Graph -->
+        <div class="card">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">8. Hardware Device Utilization (Last 15 Days)</h2>
+            <div class="table-container mt-4">
+                <table class="min-w-full">
+                    <thead>
+                        <tr>
+                            <th>Hardware Type</th>
+                            <th>Customers Onboarded</th>
+                            <th>Devices Assigned</th>
+                            <th>Customer Active ≥1 Day</th>
+                            <th>Devices Active ≥5 Days</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Spectro TV</td><td>51</td><td>70</td><td>41</td><td>58</td></tr>
+                        <tr><td>Spectro Tablet</td><td>11</td><td>11</td><td>3</td><td>3</td></tr>
+                        <tr><td>DigiMelt-IF</td><td>6</td><td>7</td><td>5</td><td>5</td></tr>
+                        <tr><td>DigiMelt-EAF</td><td>3</td><td>5</td><td>2</td><td>4</td></tr>
+                        <tr><td>Heat Plan-Tablet</td><td>3</td><td>5</td><td>3</td><td>3</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="text-sm text-gray-600 mt-4 mb-4">Comparison of Devices Assigned vs. Active. Hover over bars for details.</p>
+            <div id="bar-chart-8" class="chart-container"></div>
+        </div>
+
+       <!-- 9. Summary Insights & Recommendations -->
+<div class="summary-section">
+  <h2 class="text-2xl font-semibold text-gray-700 mb-4">
+    9. Summary Insights & Recommendations
+  </h2>
+
+  <!-- Changed grid to single column -->
+  <div class="grid grid-cols-1 gap-6">
+    <div class="summary-card">
+      <h3 class="text-xl font-medium text-gray-800 mb-2">
+        <strong>Overall Customer Trends</strong>
+      </h3>
+      <ul class="list-disc list-inside text-gray-700 mb-4">
+        <li>
+          Total paid customers increased by 7, but new customer acquisition has
+          stalled to zero this period, and there was one dropped customer. This
+          points to a need to investigate the acquisition slowdown.
+        </li>
+        <li>
+          The majority of customers remain on <strong>Software ON</strong> (109),
+          with <strong>Whatsapp Suggestion Reading</strong> being the dominant
+          feature used by 90 users.
+        </li>
+      </ul>
+
+      <h3 class="text-xl font-medium text-gray-800 mb-2">
+        <strong>Module-Specific Insights</strong>
+      </h3>
+      <ul class="list-disc list-inside text-gray-700 mb-4">
+        <li>
+          <strong>ChargeMix Usage:</strong> Activity has dropped significantly.
+          Brakes India Foundry Division modified charge mix 14 times, down from
+          26. Most other customers are inactive.
+        </li>
+        <li>
+          <strong>Production Plan :</strong> Production Plan used only Shree
+          Kedar Actively is mostly dormant. and sapre drop out the process while
+          searching part name
+        </li>
+        <li>
+          <strong>Heat Plan :</strong> Heat Plan has concerns with completion
+          rates and high drop-off while creating heat plan for new (P.C sons)
+          and existing users (Sapre Precisions). A promising new performer, P.C.
+          Sons, has a very high drop-off rate (54%).
+        </li>
+        <li>
+          <strong>HMT Section:</strong> There are active users with strong
+          parsing and report downloads (NIPHA, Mantri Metallics, Maxwell Auto).
+          However, some users are also showing declining or zero activity.
+        </li>
+        <li>
+          <strong>MTC certificate :</strong> Most MTC reports are inactive or
+          pending. Only a few customers (Parvati Foundry, RBA Exports) show
+          current period activity.
+        </li>
+        <li>
+          Most of the customers don’t test three type of certificate (HMT), so
+          MTC certificate creation rate is too low
+        </li>
+        <li>
+          <strong>Hardware Device Utilization :</strong> Spectro TV is
+          maintaining strong usage, but Spectro Tablet and other devices show
+          low sticky usage, which is an area for potential hardware engagement
+          or training.
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+                
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Data for charts
+            const data = {
+                customerGrouping: [
+                    { feature: "Whatsapp (Only Reading)", count: 7 },
+                    { feature: "Whatsapp (Compared Reading)", count: 11 },
+                    { feature: "Whatsapp (Suggestion Reading)", count: 90 },
+                    { feature: "custom (Ai user)", count: 1 }
+                ],
+                chargeMixUsage: [
+                    { customer: "Brakes India Foundry", prev: 26, curr: 14, optimized: 5 },
+                    { customer: "Brakes India Naidupet", prev: 1, curr: 2, optimized: 2 },
+                    { customer: "Brakes India Flometallic", prev: 0, curr: 0, optimized: 0 },
+                    { customer: "BRAKES INDIA UNIT 2", prev: 0, curr: 0, optimized: 0 },
+                    { customer: "CRESCENT FOUNDRY", prev: 0, curr: 0, optimized: 0 }
+                ],
+                productionPlan: [
+                    { customer: "Shree Kedar Metals", prev: 6, curr: 5, avg_time: 2 },
+                    { customer: "CRESCENT FOUNDRY(GJ)", prev: 1, curr: 0, avg_time: 0 },
+                    { customer: "P.C. Sons casting", prev: 1, curr: 0, avg_time: 0 }
+                ],
+                heatPlan: [
+                    { customer: "Belgaum FerroCast", created_curr: 265, completed_curr: 44, avg_day: 44.17, drop_rate: 29 },
+                    { customer: "Vishwakarma Founders", created_curr: 486, completed_curr: 277, avg_day: 71.13, drop_rate: 11 },
+                    { customer: "Mal Metalliks", created_curr: 506, completed_curr: 207, avg_day: 53.3, drop_rate: 0 },
+                    { customer: "Shree Kedar Metals", created_curr: 40, completed_curr: 15, avg_day: 5.5, drop_rate: 14 },
+                    { customer: "Sapre Precision", created_curr: 31, completed_curr: 0, avg_day: 30.5, drop_rate: 25 },
+                    { customer: "CRESCENT FOUNDRY(GJ)", created_curr: 73, completed_curr: 28, avg_day: 18.25, drop_rate: 20 },
+                    { customer: "P.C. Sons Castings", created_curr: 47, completed_curr: 27, avg_day: 9.4, drop_rate: 54 }
+                ],
+                meltingEAF: [
+                    { customer: "Titagarh Rail (HED)", prev: 82, curr: 38, loss_prev: 10, loss_curr: 10 },
+                    { customer: "LOCO CASTINGS", prev: 30, curr: 18, loss_prev: 10, loss_curr: 14 },
+                    { customer: "TITAGARH STEEL", prev: 72, curr: 48, loss_prev: 8, loss_curr: 9 }
+                ],
+                hmtSection: [
+                    { customer: "KALYAN STEEL PRODUCTS", prev: 124+3+1, curr: 43+5+0, details: "Hardness: Prev 124, Curr 43; Microstructure: Prev 3, Curr 5; Tensile: Prev 1, Curr 0" },
+                    { customer: "Parvati Foundry", prev: 9+105+16, curr: 0+101+0, details: "Hardness: Prev 9, Curr 0; Microstructure: Prev 105, Curr 101; Tensile: Prev 16, Curr 0" },
+                    { customer: "RBA EXPORTS TN", prev: 4+17+4, curr: 2+4+3, details: "Hardness: Prev 4, Curr 2; Microstructure: Prev 17, Curr 4; Tensile: Prev 4, Curr 3" },
+                    { customer: "MANTRI METALLICS", prev: 103+422+46, curr: 88+377+94, details: "Hardness: Prev 103, Curr 88; Microstructure: Prev 422, Curr 377; Tensile: Prev 46, Curr 94" },
+                    { customer: "NIF ISPAT (UNIT-IV)", prev: 0+0+0, curr: 1+107+4, details: "Hardness: Prev 0, Curr 1 (100% fail); Microstructure: Prev 0, Curr 107 (93.46% fail); Tensile: Prev 0, Curr 4 (100% fail)" },
+                    { customer: "Sapre Precision", prev: 0+5+5, curr: 43+6+0, details: "Hardness: Prev 0, Curr 43 (25.58% fail); Microstructure: Prev 5, Curr 6; Tensile: Prev 5, Curr 0" },
+                    { customer: "Maxwell Auto Components", prev: 0, curr: 18+19+33, details: "Hardness: Curr 18; Microstructure: Curr 19 (100% fail); Tensile: Curr 33 (21.21% fail)" },
+                    { customer: "Belgaum FerroCast", prev: 0+14, curr: 181+291, details: "Hardness: Curr 181; Tensile: Prev 14, Curr 291 (14.09% fail)" }
+                ],
+                hardwareUsage: [
+                    { type: "Spectro TV", assigned: 70, active1: 41, active5: 58 },
+                    { type: "Spectro Tablet", assigned: 11, active1: 3, active5: 3 },
+                    { type: "DigiMelt-IF", assigned: 7, active1: 5, active5: 5 },
+                    { type: "DigiMelt-EAF", assigned: 5, active1: 2, active5: 4 },
+                    { type: "Heat Plan-Tablet", assigned: 5, active1: 3, active5: 3 }
+                ]
+            };
+            
+            // Common chart dimensions and margins
+            const margin = { top: 20, right: 30, bottom: 120, left: 60 };
+            const getChartDimensions = (id) => {
+                const container = document.getElementById(id);
+                const width = container.clientWidth - margin.left - margin.right;
+                const height = container.clientHeight - margin.top - margin.bottom;
+                return { width, height };
+            };
+
+            // Tooltip element
+            const tooltip = d3.select("body").append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 0);
+
+            // Function to create Pie Chart
+            function createPieChart(data, elementId) {
+                const { width, height } = getChartDimensions(elementId);
+                const radius = Math.min(width, height) / 2;
+
+                const svg = d3.select(`#${elementId}`)
+                    .append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform", `translate(${width / 2 + margin.left}, ${height / 2 + margin.top})`);
+
+                const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+                const pie = d3.pie().value(d => d.count).sort(null);
+                const arc = d3.arc().innerRadius(0).outerRadius(radius * 0.8);
+                const outerArc = d3.arc().innerRadius(radius * 0.9).outerRadius(radius * 0.9);
+
+                const arcs = svg.selectAll(".arc")
+                    .data(pie(data))
+                    .enter()
+                    .append("g")
+                    .attr("class", "arc");
+
+                arcs.append("path")
+                    .attr("d", arc)
+                    .attr("fill", d => color(d.data.feature))
+                    .attr("stroke", "white")
+                    .style("stroke-width", "2px")
+                    .on("mouseover", function(event, d) {
+                        d3.select(this).transition().duration(200).attr("d", arc.outerRadius(radius * 0.85));
+                        tooltip.transition().duration(200).style("opacity", .9);
+                        tooltip.html(`<strong>${d.data.feature}</strong><br/>Customers: ${d.data.count}`)
+                            .style("left", (event.pageX + 10) + "px")
+                            .style("top", (event.pageY - 28) + "px");
+                    })
+                    .on("mouseout", function(event, d) {
+                        d3.select(this).transition().duration(200).attr("d", arc.outerRadius(radius * 0.8));
+                        tooltip.transition().duration(500).style("opacity", 0);
+                    });
+
+                // Add text labels
+                arcs.append("text")
+                    .attr("transform", d => `translate(${outerArc.centroid(d)})`)
+                    .attr("dy", "0.35em")
+                    .text(d => `${d.data.feature} (${d.data.count})`)
+                    .style("font-size", "0.8rem")
+                    .style("text-anchor", d => {
+                        const midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
+                        return (midangle < Math.PI ? "start" : "end");
+                    })
+                    .style("fill", "#333");
+            }
+
+            // Function to create Bar Chart (reusable)
+            function createBarChart(data, elementId, xKey, yKeys, title, tooltipFormatter) {
+                const { width, height } = getChartDimensions(elementId);
+
+                const svg = d3.select(`#${elementId}`)
+                    .append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+                const x0 = d3.scaleBand().rangeRound([0, width]).paddingInner(0.1);
+                const x1 = d3.scaleBand().padding(0.05);
+                const y = d3.scaleLinear().rangeRound([height, 0]);
+                const z = d3.scaleOrdinal(d3.schemeCategory10);
+
+                x0.domain(data.map(d => d[xKey]));
+                x1.domain(yKeys).rangeRound([0, x0.bandwidth()]);
+                y.domain([0, d3.max(data, d => d3.max(yKeys, key => d[key]))]).nice();
+
+                svg.append("g")
+                    .selectAll("g")
+                    .data(data)
+                    .enter()
+                    .append("g")
+                    .attr("transform", d => `translate(${x0(d[xKey])},0)`)
+                    .selectAll("rect")
+                    .data(d => yKeys.map(key => ({ key: key, value: d[key], data: d })))
+                    .enter()
+                    .append("rect")
+                    .attr("x", d => x1(d.key))
+                    .attr("y", d => y(d.value))
+                    .attr("width", x1.bandwidth())
+                    .attr("height", d => height - y(d.value))
+                    .attr("fill", d => z(d.key))
+                    .attr("rx", 4)
+                    .attr("ry", 4)
+                    .on("mouseover", function(event, d) {
+                        d3.select(this).attr("opacity", 0.7);
+                        tooltip.transition().duration(200).style("opacity", .9);
+                        tooltip.html(tooltipFormatter(d.data, d.key, d.value))
+                            .style("left", (event.pageX + 10) + "px")
+                            .style("top", (event.pageY - 28) + "px");
+                    })
+                    .on("mouseout", function(event, d) {
+                        d3.select(this).attr("opacity", 1);
+                        tooltip.transition().duration(500).style("opacity", 0);
+                    });
+
+                svg.append("g")
+                    .attr("class", "axis x-axis")
+                    .attr("transform", `translate(0,${height})`)
+                    .call(d3.axisBottom(x0))
+                    .selectAll("text")
+                    .attr("transform", "rotate(-45)")
+                    .style("text-anchor", "end")
+                    .style("font-size", "0.8rem")
+                    .style("fill", "#555");
+
+                svg.append("g")
+                    .attr("class", "axis y-axis")
+                    .call(d3.axisLeft(y).ticks(null, "s"));
+
+                const legend = svg.append("g")
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", 10)
+                    .attr("text-anchor", "end")
+                    .selectAll("g")
+                    .data(yKeys.slice().reverse())
+                    .enter().append("g")
+                    .attr("transform", (d, i) => `translate(0,${i * 20})`);
+
+                legend.append("rect")
+                    .attr("x", width - 19)
+                    .attr("width", 19)
+                    .attr("height", 19)
+                    .attr("fill", z);
+
+                legend.append("text")
+                    .attr("x", width - 24)
+                    .attr("y", 9.5)
+                    .attr("dy", "0.32em")
+                    .text(d => {
+                        if (d === 'prev' || d === 'curr') {
+                            return d === 'prev' ? 'Prev Period' : 'Curr Period';
+                        }
+                        if (d === 'created_curr' || d === 'completed_curr') {
+                            return d === 'created_curr' ? 'Created' : 'Completed';
+                        }
+                        if (d === 'assigned' || d === 'active1') {
+                            return d === 'assigned' ? 'Assigned' : 'Active ≥1 Day';
+                        }
+                        return d;
+                    });
+            }
+
+            // Render Charts
+            // 2. Customer Grouping by Feature Attributes
+            createPieChart(data.customerGrouping, "pie-chart-2");
+
+            // 3. ChargeMix Usage
+            createBarChart(
+                data.chargeMixUsage,
+                "bar-chart-3",
+                "customer",
+                ["prev", "curr"],
+                "Count",
+                (d, key, value) => `<strong>${d.customer}</strong><br/>
+                                    ${key === 'prev' ? 'Modified Prev Period' : 'Modified Current Period'}: ${value}<br/>
+                                    Optimized Count: ${d.optimized}`
+            );
+            
+            // 5.1 Production Plan
+            createBarChart(
+                data.productionPlan,
+                "bar-chart-5-1",
+                "customer",
+                ["prev", "curr"],
+                "Count",
+                (d, key, value) => `<strong>${d.customer}</strong><br/>
+                                    ${key === 'prev' ? 'Plans Created Prev' : 'Plans Created Current'}: ${value}<br/>
+                                    Avg Time to Create: ${d.avg_time} min`
+            );
+
+            // 5.2 Heat Plan
+            createBarChart(
+                data.heatPlan,
+                "bar-chart-5-2",
+                "customer",
+                ["created_curr", "completed_curr"],
+                "Count",
+                (d, key, value) => `<strong>${d.customer}</strong><br/>
+                                    ${key === 'created_curr' ? 'Created' : 'Completed'}: ${value}<br/>
+                                    Avg per Day: ${d.avg_day}<br/>
+                                    Drop Rate: ${d.drop_rate}%`
+            );
+
+            // 5.3 Melting Section (EAF)
+            createBarChart(
+                data.meltingEAF,
+                "bar-chart-5-3",
+                "customer",
+                ["prev", "curr"],
+                "Count",
+                (d, key, value) => `<strong>${d.customer}</strong><br/>
+                                    ${key === 'prev' ? 'Heats Submitted Prev' : 'Heats Submitted Curr'}: ${value}<br/>
+                                    Recoverable Loss: ${key === 'prev' ? d.loss_prev : d.loss_curr}%`
+            );
+            
+            // 6. HMT Section
+            createBarChart(
+                data.hmtSection,
+                "bar-chart-6",
+                "customer",
+                ["prev", "curr"],
+                "Total Reports",
+                (d, key, value) => `<strong>${d.customer}</strong><br/>
+                                    Total ${key === 'prev' ? 'Previous Period' : 'Current Period'} Reports: ${value}<br/><br/>
+                                    ${d.details}`
+            );
+
+            // 8. Hardware Device Utilization (Last 15 Days)
+            createBarChart(
+                data.hardwareUsage,
+                "bar-chart-8",
+                "type",
+                ["assigned", "active1", "active5"],
+                "Count",
+                (d, key, value) => `<strong>${d.type}</strong><br/>
+                                    ${key === 'assigned' ? 'Devices Assigned' : (key === 'active1' ? 'Active ≥1 Day' : 'Active ≥5 Days')}: ${value}`
+            );
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                d3.select("#pie-chart-2 svg").remove();
+                d3.select("#bar-chart-3 svg").remove();
+                d3.select("#bar-chart-5-1 svg").remove();
+                d3.select("#bar-chart-5-2 svg").remove();
+                d3.select("#bar-chart-5-3 svg").remove();
+                d3.select("#bar-chart-6 svg").remove();
+                d3.select("#bar-chart-8 svg").remove();
+                
+                createPieChart(data.customerGrouping, "pie-chart-2");
+                createBarChart(data.chargeMixUsage, "bar-chart-3", "customer", ["prev", "curr"], "Count", (d, key, value) => `<strong>${d.customer}</strong><br/>${key === 'prev' ? 'Modified Prev Period' : 'Modified Current Period'}: ${value}<br/>Optimized Count: ${d.optimized}`);
+                createBarChart(data.productionPlan, "bar-chart-5-1", "customer", ["prev", "curr"], "Count", (d, key, value) => `<strong>${d.customer}</strong><br/>${key === 'prev' ? 'Plans Created Prev' : 'Plans Created Current'}: ${value}<br/>Avg Time to Create: ${d.avg_time} min`);
+                createBarChart(data.heatPlan, "bar-chart-5-2", "customer", ["created_curr", "completed_curr"], "Count", (d, key, value) => `<strong>${d.customer}</strong><br/>${key === 'created_curr' ? 'Created' : 'Completed'}: ${value}<br/>Avg per Day: ${d.avg_day}<br/>Drop Rate: ${d.drop_rate}%`);
+                createBarChart(data.meltingEAF, "bar-chart-5-3", "customer", ["prev", "curr"], "Count", (d, key, value) => `<strong>${d.customer}</strong><br/>${key === 'prev' ? 'Heats Submitted Prev' : 'Heats Submitted Curr'}: ${value}<br/>Recoverable Loss: ${key === 'prev' ? d.loss_prev : d.loss_curr}%`);
+                createBarChart(data.hmtSection, "bar-chart-6", "customer", ["prev", "curr"], "Total Reports", (d, key, value) => `<strong>${d.customer}</strong><br/>Total ${key === 'prev' ? 'Previous Period' : 'Current Period'} Reports: ${value}<br/><br/>${d.details}`);
+                createBarChart(data.hardwareUsage, "bar-chart-8", "type", ["assigned", "active1", "active5"], "Count", (d, key, value) => `<strong>${d.type}</strong><br/>${key === 'assigned' ? 'Devices Assigned' : (key === 'active1' ? 'Active ≥1 Day' : 'Active ≥5 Days')}: ${value}`);
+            });
+        });
+    </script>
+</body>
+</html>
